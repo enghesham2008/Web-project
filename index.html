@@ -1,0 +1,600 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HA Store - سوبر ماركت</title>
+    <style>
+        :root {
+            --primary: #16a34a;
+            --primary-dark: #15803d;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* شاشة تسجيل الدخول */
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #16a34a 0%, #065f46 100%);
+        }
+
+        .login-card {
+            background: var(--card);
+            width: 100%;
+            max-width: 400px;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+            .login-card h1 {
+                margin: 0 0 8px;
+                color: var(--primary);
+                font-size: 2rem;
+            }
+
+            .login-card p {
+                color: var(--muted);
+                margin-bottom: 24px;
+            }
+
+            .login-card input {
+                width: 100%;
+                padding: 14px;
+                font-size: 1.3rem;
+                text-align: center;
+                letter-spacing: 6px;
+                border: 2px solid var(--border);
+                border-radius: 10px;
+                margin-bottom: 16px;
+                outline: none;
+            }
+
+                .login-card input:focus {
+                    border-color: var(--primary);
+                }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background: var(--primary-dark);
+            }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .hint-box {
+            margin-top: 20px;
+            padding: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--muted);
+            border: 1px dashed var(--border);
+        }
+
+        /* الهيدر */
+        header {
+            background: var(--card);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .badge-role {
+            background: #dcfce7;
+            color: var(--primary-dark);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .btn-sm {
+            width: auto;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* المحتوى الرئيسي */
+        .container {
+            max-width: 1100px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+        }
+
+        .product-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin: 6px 0;
+        }
+
+        .product-price {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 14px;
+        }
+
+        .sold-out-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--danger);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .product-card.is-sold-out {
+            opacity: 0.7;
+        }
+
+        .product-card button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* سلة التسوق */
+        .cart-panel {
+            background: var(--card);
+            margin-top: 32px;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--border);
+            background: #f9fafb;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cod-box {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin: 16px 0;
+            font-weight: bold;
+        }
+
+        .checkout-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        /* لوحة الأدمن */
+        .admin-add-box {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            align-items: end;
+        }
+
+            .admin-add-box label {
+                display: block;
+                font-size: 0.85rem;
+                margin-bottom: 4px;
+                color: var(--muted);
+            }
+
+            .admin-add-box input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+            }
+
+        .admin-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="login-screen" class="login-wrapper">
+        <div class="login-card">
+            <h1>🛒 HA Store</h1>
+            <p>أدخل كود الدخول للمتابعة</p>
+            <input type="text" id="login-code" maxlength="4" placeholder="••••" />
+            <button class="btn btn-primary" onclick="handleLogin()">دخول</button>
+            <p id="login-error" style="color: var(--danger); margin-top: 10px; font-size: 0.9rem;"></p>
+            <div class="hint-box">
+                كود العميل (User): <strong>1111</strong><br />
+                كود المدير (Admin): <strong>0000</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- التطبيق الرئيسي -->
+    <div id="app-screen" class="hidden">
+        <header>
+            <div class="brand">🛒 HA Store</div>
+            <div class="header-actions">
+                <span id="role-badge" class="badge-role"></span>
+                <button class="btn btn-danger btn-sm" onclick="logout()">تسجيل خروج</button>
+            </div>
+        </header>
+
+        <!-- واجهة العميل (User) -->
+        <div id="user-view" class="container hidden">
+            <h2>منتجات السوبر ماركت</h2>
+            <div id="user-products-grid" class="products-grid"></div>
+
+            <div class="cart-panel">
+                <h3>🛍️ عربة التسوق</h3>
+                <div id="cart-items"></div>
+                <h4 id="cart-total" style="margin-top: 16px;">الإجمالي: 0 ج.م</h4>
+
+                <div id="checkout-section" class="hidden">
+                    <div class="cod-box">
+                        💵 طريقة الدفع الوحيدة المتاحة: الدفع نقداً عند الاستلام (Cash on Delivery)
+                    </div>
+                    <div class="checkout-form">
+                        <input type="text" id="customer-name" placeholder="الاسم بالكامل" />
+                        <input type="text" id="customer-phone" placeholder="رقم الموبايل" />
+                        <input type="text" id="customer-address" placeholder="العنوان بالتفصيل" />
+                        <button class="btn btn-primary" onclick="placeOrder()">تأكيد الطلب الآن</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- واجهة الأدمن (Admin) -->
+        <div id="admin-view" class="container hidden">
+            <h2>⚙️ لوحة تحكم الأدمن</h2>
+            <div class="admin-add-box">
+                <div>
+                    <label>اسم المنتج</label>
+                    <input type="text" id="new-name" placeholder="مثال: جبنة بيضاء" />
+                </div>
+                <div>
+                    <label>السعر (ج.م)</label>
+                    <input type="number" id="new-price" placeholder="مثال: 35" />
+                </div>
+                <div>
+                    <label>أيقونة / إيموجي</label>
+                    <input type="text" id="new-emoji" placeholder="مثال: 🧀" value="📦" />
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="addProduct()">+ إضافة منتج</button>
+                </div>
+            </div>
+
+            <div id="admin-products-grid" class="products-grid"></div>
+        </div>
+    </div>
+
+    <script>
+            const defaultProducts = [
+              { id: 1, name: "طماطم طازجة (1 كيلو)", price: 15, emoji: "🍅", soldOut: false },
+              { id: 2, name: "بصل أحمر (1 كيلو)", price: 18, emoji: "🧅", soldOut: false },
+              { id: 3, name: "فلفل أخضر (1 كيلو)", price: 20, emoji: "🫑", soldOut: false },
+              { id: 4, name: "شيبسي عائلي", price: 12, emoji: "🥔", soldOut: false },
+              { id: 5, name: "كيس ملح طعام", price: 5, emoji: "🧂", soldOut: false },
+              { id: 6, name: "بيبسي كانز 330 مل", price: 15, emoji: "🥤", soldOut: false }
+            ];
+
+            let products = JSON.parse(localStorage.getItem("ha_store_products")) || defaultProducts;
+            let cart = [];
+
+            function saveProducts() {
+              localStorage.setItem("ha_store_products", JSON.stringify(products));
+            }
+
+            // تحويل الأرقام العربية (١١١١ / ٠٠٠٠) إلى إنجليزية تلقائياً
+            function normalizeDigits(str) {
+              return str.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d)).trim();
+            }
+
+            function handleLogin() {
+              const rawCode = document.getElementById("login-code").value;
+              const code = normalizeDigits(rawCode);
+              const errorEl = document.getElementById("login-error");
+
+              if (code === "1111") {
+                errorEl.textContent = "";
+                showScreen("user");
+              } else if (code === "0000") {
+                errorEl.textContent = "";
+                showScreen("admin");
+              } else {
+                errorEl.textContent = "كود غير صحيح! اكتب 1111 للعميل أو 0000 للأدمن.";
+              }
+            }
+
+            function showScreen(role) {
+              document.getElementById("login-screen").classList.add("hidden");
+              document.getElementById("app-screen").classList.remove("hidden");
+
+              if (role === "user") {
+                document.getElementById("role-badge").textContent = "وضع العميل (User)";
+                document.getElementById("user-view").classList.remove("hidden");
+                document.getElementById("admin-view").classList.add("hidden");
+                renderUserProducts();
+                renderCart();
+              } else {
+                document.getElementById("role-badge").textContent = "وضع المدير (Admin)";
+                document.getElementById("admin-view").classList.remove("hidden");
+                document.getElementById("user-view").classList.add("hidden");
+                renderAdminProducts();
+              }
+            }
+
+            function logout() {
+              document.getElementById("login-code").value = "";
+              document.getElementById("app-screen").classList.add("hidden");
+              document.getElementById("login-screen").classList.remove("hidden");
+            }
+
+            // عرض المنتجات للعميل
+            function renderUserProducts() {
+              const grid = document.getElementById("user-products-grid");
+              grid.innerHTML = products.map(p => `
+                <div class="product-card ${p.soldOut ? 'is-sold-out' : ''}">
+                  ${p.soldOut ? '<span class="sold-out-tag">Sold Out</span>' : ''}
+                  <div>
+                    <div class="product-emoji">${p.emoji}</div>
+                    <div class="product-title">${p.name}</div>
+                    <div class="product-price">${p.price} ج.م</div>
+                  </div>
+                  <button class="btn btn-primary" ${p.soldOut ? 'disabled' : ''} onclick="addToCart(${p.id})">
+                    ${p.soldOut ? 'نفدت الكمية' : 'أضف للسلة 🛒'}
+                  </button>
+                </div>
+              `).join("");
+            }
+
+            // إدارة السلة
+            function addToCart(id) {
+              const product = products.find(p => p.id === id);
+              if (!product || product.soldOut) return;
+
+              const existing = cart.find(item => item.id === id);
+              if (existing) {
+                existing.qty++;
+              } else {
+                cart.push({ ...product, qty: 1 });
+              }
+              renderCart();
+            }
+
+            function changeQty(id, delta) {
+              const item = cart.find(i => i.id === id);
+              if (!item) return;
+              item.qty += delta;
+              if (item.qty <= 0) {
+                cart = cart.filter(i => i.id !== id);
+              }
+              renderCart();
+            }
+
+            function renderCart() {
+              const container = document.getElementById("cart-items");
+              const totalEl = document.getElementById("cart-total");
+              const checkoutSec = document.getElementById("checkout-section");
+
+              if (cart.length === 0) {
+                container.innerHTML = "<p style='color: var(--muted);'>عربة التسوق فارغة حالياً.</p>";
+                totalEl.textContent = "الإجمالي: 0 ج.م";
+                checkoutSec.classList.add("hidden");
+                return;
+              }
+
+              let total = 0;
+              container.innerHTML = cart.map(item => {
+                total += item.price * item.qty;
+                return `
+                  <div class="cart-item">
+                    <div><strong>${item.emoji} ${item.name}</strong> (${item.price} ج.م)</div>
+                    <div class="qty-controls">
+                      <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+                      <span>${item.qty}</span>
+                      <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+                    </div>
+                  </div>
+                `;
+              }).join("");
+
+              totalEl.textContent = `الإجمالي: ${total} ج.م`;
+              checkoutSec.classList.remove("hidden");
+            }
+
+            function placeOrder() {
+              const name = document.getElementById("customer-name").value.trim();
+              const phone = document.getElementById("customer-phone").value.trim();
+              const address = document.getElementById("customer-address").value.trim();
+
+              if (!name || !phone || !address) {
+                alert("من فضلك أدخل الاسم ورقم الموبايل والعنوان لإتمام الطلب.");
+                return;
+              }
+
+              alert(`✅ تم استلام طلبك بنجاح يا ${name}!\nسيتم التوصيل إلى: ${address}\nطريقة الدفع: الدفع عند الاستلام.`);
+              cart = [];
+              document.getElementById("customer-name").value = "";
+              document.getElementById("customer-phone").value = "";
+              document.getElementById("customer-address").value = "";
+              renderCart();
+            }
+
+            // وظائف الأدمن
+            function renderAdminProducts() {
+              const grid = document.getElementById("admin-products-grid");
+              grid.innerHTML = products.map(p => `
+                <div class="product-card">
+                  ${p.soldOut ? '<span class="sold-out-tag">Sold Out</span>' : ''}
+                  <div>
+                    <div class="product-emoji">${p.emoji}</div>
+                    <div class="product-title">${p.name}</div>
+                    <div class="product-price">${p.price} ج.م</div>
+                  </div>
+                  <div class="admin-actions">
+                    <button class="btn ${p.soldOut ? 'btn-primary' : 'btn-warning'}" onclick="toggleSoldOut(${p.id})">
+                      ${p.soldOut ? 'إعادة التوفر (Available)' : 'تعيين Sold Out'}
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteProduct(${p.id})">حذف المنتج 🗑️</button>
+                  </div>
+                </div>
+              `).join("");
+            }
+
+            function toggleSoldOut(id) {
+              const product = products.find(p => p.id === id);
+              if (product) {
+                product.soldOut = !product.soldOut;
+                saveProducts();
+                renderAdminProducts();
+              }
+            }
+
+            function deleteProduct(id) {
+              products = products.filter(p => p.id !== id);
+              saveProducts();
+              renderAdminProducts();
+            }
+
+            function addProduct() {
+              const name = document.getElementById("new-name").value.trim();
+              const price = parseFloat(document.getElementById("new-price").value);
+              const emoji = document.getElementById("new-emoji").value.trim() || "📦";
+
+              if (!name || isNaN(price) || price <= 0) {
+                alert("أدخل اسم المنتج وسعر صحيح.");
+                return;
+              }
+
+              products.push({
+                id: Date.now(),
+                name,
+                price,
+                emoji,
+                soldOut: false
+              });
+
+              saveProducts();
+              document.getElementById("new-name").value = "";
+              document.getElementById("new-price").value = "";
+              renderAdminProducts();
+            }
+    </script>
+</body>
+</html>
